@@ -1,0 +1,5 @@
+fastapi==0.115.0  # FastAPI web framework.
+uvicorn==0.30.6  # ASGI server for FastAPI.
+sqlalchemy==2.0.35  # ORM and SQL toolkit.
+psycopg2-binary==2.9.9; python_version < "3.13"  # PostgreSQL driver (Py<=3.12).
+psycopg==3.2.3; python_version >= "3.13"  # PostgreSQL driver (Py>=3.13).

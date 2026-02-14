@@ -1,0 +1,7 @@
+name: test
+on: [push, workflow_dispatch]
+jobs:
+  echo:
+    runs-on: self-hosted
+    steps:
+      - run: echo "Hello from runner"

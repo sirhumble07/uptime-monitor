@@ -1,0 +1,25 @@
+version: "3.9"  # Compose file version.
+
+services:  # Service definitions.
+  db:  # PostgreSQL database service.
+    image: postgres:16  # Official Postgres image.
+    environment:  # Environment variables for Postgres.
+      POSTGRES_USER: app  # Database user.
+      POSTGRES_PASSWORD: app  # Database password.
+      POSTGRES_DB: uptime  # Database name.
+    volumes:  # Persistent volume for data.
+      - db-data:/var/lib/postgresql/data  # Map volume to data dir.
+    ports:  # Expose DB for local access.
+      - "5432:5432"  # Host:container port mapping.
+
+  api:  # FastAPI service.
+    build: .  # Build from Dockerfile.
+    environment:  # Environment variables for the app.
+      DATABASE_URL: postgresql+psycopg2://app:app@db:5432/uptime  # DB connection string.
+    ports:  # Expose API port.
+      - "8000:8000"  # Host:container port mapping.
+    depends_on:  # Start DB before API.
+      - db  # Dependency.
+
+volumes:  # Named volumes.
+  db-data:  # Volume name.

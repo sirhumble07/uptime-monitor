@@ -1,0 +1,57 @@
+name: ci  # Workflow name.
+
+on:  # Triggers.
+  workflow_dispatch:  # Manual trigger.
+  push:  # Run on push.
+    branches: ["main"]  # Only main branch.
+  pull_request:  # Run on PRs.
+
+jobs:  # Job definitions.
+  test:  # Job id.
+    runs-on: self-hosted
+    services:  # Service containers.
+      postgres:  # PostgreSQL service container.
+        image: postgres:16  # Postgres image.
+        env:  # Environment variables for Postgres.
+          POSTGRES_USER: app  # User.
+          POSTGRES_PASSWORD: app  # Password.
+          POSTGRES_DB: uptime  # DB name.
+        ports:  # Port mapping.
+          - 5432:5432  # Host:container port.
+        options: >-  # Health check for Postgres readiness.
+          --health-cmd="pg_isready -U app"  # Command to check health.
+          --health-interval=10s  # Interval.
+          --health-timeout=5s  # Timeout.
+          --health-retries=5  # Retries.
+
+    steps:  # Steps in job.
+      - name: Checkout  # Step name.
+        uses: actions/checkout@v4  # Checkout code.
+
+      - name: Set up Python  # Step name.
+        uses: actions/setup-python@v5  # Install Python.
+        with:  # Inputs.
+          python-version: "3.12"  # Python version.
+
+      - name: Install deps  # Step name.
+        run: pip install -r requirements.txt  # Install dependencies.
+
+      - name: Init DB
+        run: python -m app.init_db || echo "No DB init script" # Initialize DB (ignore if not present).
+
+      - name: Run tests # Step name.
+        run: pytest  # Step name and command to run tests.
+
+  deploy:
+    needs: test
+    runs-on: self-hosted
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and deploy with Docker Compose
+        run: |
+          docker compose down
+          docker compose build
+          docker compose up -d
