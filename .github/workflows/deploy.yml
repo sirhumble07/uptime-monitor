@@ -19,7 +19,7 @@ jobs:  # Job definitions.
         ports:  # Port mapping.
           - 5432:5432  # Host:container port.
         options: >-  # Health check for Postgres readiness.
-          --health-cmd="pg_isready -U app"  # Command to check health.
+          --health-cmd="pg_isready -U app"
           --health-interval=10s  # Interval.
           --health-timeout=5s  # Timeout.
           --health-retries=5  # Retries.
