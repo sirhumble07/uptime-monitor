@@ -1,4 +1,142 @@
+victor@victor:~/Documents/uptime-monitor$ git add .
+victor@victor:~/Documents/uptime-monitor$ git commit -m "Prepare for Linux VM deployment"
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'victor@victor.(none)')
+victor@victor:~/Documents/uptime-monitor$ git config--global user.name "victor"
+git: 'config--global' is not a git command. See 'git --help'.
+victor@victor:~/Documents/uptime-monitor$ git config --global --list
+fatal: unable to read config file '/home/victor/.gitconfig': No such file or directory
+victor@victor:~/Documents/uptime-monitor$ git config --global user.name "Victor Nwoke"
+git config --global user.email "victornwoke147@outlook.com"
+victor@victor:~/Documents/uptime-monitor$ git commit -m "Prepare for Linux VM deployment"
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+victor@victor:~/Documents/uptime-monitor$ git push
+Username for 'https://github.com': sirhumble07
+Password for 'https://sirhumble07@github.com':
+Everything up-to-date
+victor@victor:~/Documents/uptime-monitor$ ls
+Dockerfile  actions-runner  docker-compose.yml  notes.md
+README.md   app             nginx               requirements.txt
+victor@victor:~/Documents/uptime-monitor$ nvim README.md
+victor@victor:~/Documents/uptime-monitor$ git push -u origin main
+Username for 'https://github.com': sirhumble07
+Password for 'https://sirhumble07@github.com':
+branch 'main' set up to track 'origin/main'.
+Everything up-to-date
+victor@victor:~/Documents/uptime-monitor$ git commit -m "Trigger runner"
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+victor@victor:~/Documents/uptime-monitor$ git add .
+victor@victor:~/Documents/uptime-monitor$ git commit -m "Trigger runner"
+[main 0d3ea07] Trigger runner
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+victor@victor:~/Documents/uptime-monitor$ git push -u origin main
+Username for 'https://github.com': sirhumble07
+Password for 'https://sirhumble07@github.com':
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 314 bytes | 314.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To https://github.com/sirhumble07/uptime-monitor.git
+   6e96dbb..0d3ea07  main -> main
+branch 'main' set up to track 'origin/main'.
+victor@victor:~/Documents/uptime-monitor$ mkdir -p .github/workflows/ && touch .github/workflows/deploy.yml
+victor@victor:~/Documents/uptime-monitor$ nvim .github/workflows/deploy.yml
+victor@victor:~/Documents/uptime-monitor$ git add .
+victor@victor:~/Documents/uptime-monitor$ git commit -m "updated deploy.yml"
+[main 26d0d8a] updated deploy.yml
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+victor@victor:~/Documents/uptime-monitor$ git push -u origin main
+Username for 'https://github.com': sirhumble07
+Password for 'https://sirhumble07@github.com':
+Enumerating objects: 9, done.
+Counting objects: 100% (9/9), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (5/5), 421 bytes | 421.00 KiB/s, done.
+Total 5 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To https://github.com/sirhumble07/uptime-monitor.git
+   0d3ea07..26d0d8a  main -> main
+branch 'main' set up to track 'origin/main'.
+victor@victor:~/Documents/uptime-monitor$ nvim .github/workflows/deploy.yml
+victor@victor:~/Documents/uptime-monitor$ git add .
+victor@victor:~/Documents/uptime-monitor$ git commit -m "updated deploy.yml"
+[main 76c282e] updated deploy.yml
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+victor@victor:~/Documents/uptime-monitor$ git push -u origin main
+Username for 'https://github.com': sirhumble07
+Password for 'https://sirhumble07@github.com':
+Enumerating objects: 9, done.
+Counting objects: 100% (9/9), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (5/5), 429 bytes | 429.00 KiB/s, done.
 name: ci  # Workflow name.
+
+on:  # Triggers.
+  workflow_dispatch:  # Manual trigger.
+  push:  # Run on push.
+    branches: ["main"]  # Only main branch.
+  pull_request:  # Run on PRs.
+
+jobs:  # Job definitions.
+  test:  # Job id.
+    runs-on: self-hosted
+    services:  # Service containers.
+      postgres:  # PostgreSQL service container.
+        image: postgres:16  # Postgres image.
+        env:  # Environment variables for Postgres.
+          POSTGRES_USER: app  # User.
+          POSTGRES_PASSWORD: app  # Password.
+          POSTGRES_DB: uptime  # DB name.
+        ports:  # Port mapping.
+          - 5432:5432  # Host:container port.
+        options: >
+          --health-cmd="pg_isready -U app"
+          --health-interval=10s  # Interval.
+          --health-timeout=5s  # Timeout.
+          --health-retries=5  # Retries.
+
+    steps:  # Steps in job.
+      - name: Checkout  # Step name.
+        uses: actions/checkout@v4  # Checkout code.
+
+      - name: Set up Python  # Step name.
+        uses: actions/setup-python@v5  # Install Python.
+        with:  # Inputs.
+          python-version: "3.12"  # Python version.
+
+      - name: Install deps  # Step name.
+        run: pip install -r requirements.txt  # Install dependencies.
+
+      - name: Init DB
+.github/workflows/deploy.yml                                                                                                        1,1            Top
+-- INSERT --name: ci  # Workflow name.
 
 on:  # Triggers.
   workflow_dispatch:  # Manual trigger.
