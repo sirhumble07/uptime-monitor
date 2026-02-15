@@ -26,7 +26,7 @@
       <section class="card">
         <div class="card-header">
           <h2>Monitors</h2>
-          <button class="btn" id="refreshBtn">Refresh</button>
+          <button class="btn" id="refreshBtn" onclick="location.reload()">Refresh</button>
         </div>
         <div class="table-wrap">
           <table>
@@ -39,7 +39,7 @@
                 <th>Last Checked</th>
               </tr>
             </thead>
-            <tbody id="monitorsBody">
+            <tbody>
               {% if monitors %}
                 {% for monitor in monitors %}
                   <tr>
@@ -96,7 +96,6 @@
     <footer class="footer">
       <span>© {{ title }} · {{ now().year }}</span>
     </footer>
-
     <script src="/static/app.js"></script>
   </body>
 </html>
