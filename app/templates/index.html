@@ -74,7 +74,7 @@
         <div class="card-header">
           <h2>Quick Actions</h2>
         </div>
-        <form class="form" id="createForm" method="post" action="/monitors">
+        <form class="form" id="createForm" method="post" action="/monitors" onsubmit="return submitForm(event)">
           <label>
             Name
             <input type="text" name="name" placeholder="Homepage" required />
@@ -89,13 +89,48 @@
           </label>
           <button class="btn primary" type="submit">Create Monitor</button>
           <p class="hint">Auto-refresh every 15 seconds.</p>
+          <div id="formMessage" style="color: red; margin-top: 10px;"></div>
         </form>
       </section>
     </main>
 
     <footer class="footer">
-      <span>© {{ title }} · {{ now().year }}</span>
+      <span>© {{ title }} · {{ now().year if now else '' }}</span>
     </footer>
+    <script>
+      // Optional: AJAX form submission for better UX
+      async function submitForm(event) {
+        event.preventDefault();
+        const form = event.target;
+        const data = {
+          name: form.name.value,
+          url: form.url.value,
+          interval_seconds: form.interval_seconds.value
+        };
+        const messageDiv = document.getElementById('formMessage');
+        messageDiv.textContent = '';
+        try {
+          const response = await fetch('/monitors', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+          });
+          if (response.ok) {
+            messageDiv.style.color = 'green';
+            messageDiv.textContent = 'Monitor created!';
+            setTimeout(() => location.reload(), 1000);
+          } else {
+            const result = await response.json();
+            messageDiv.style.color = 'red';
+            messageDiv.textContent = result.detail || 'Error creating monitor.';
+          }
+        } catch (err) {
+          messageDiv.style.color = 'red';
+          messageDiv.textContent = 'Network error.';
+        }
+        return false;
+      }
+    </script>
     <script src="/static/app.js"></script>
   </body>
 </html>
