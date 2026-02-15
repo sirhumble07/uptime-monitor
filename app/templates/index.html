@@ -44,7 +44,7 @@
                 {% for monitor in monitors %}
                   <tr>
                     <td>{{ monitor.name }}</td>
-                    <td><a href="{{ monitor.url }}" target="_blank">{{ monitor.url }}</a></td>
+                    <td><a href="{{ monitor.url }}" target="_blank" style="color: white;">{{ monitor.url }}</a></td>
                     <td>{{ monitor.interval_seconds }}</td>
                     <td>
                       {% if monitor.status == "up" %}
