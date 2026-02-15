@@ -15,11 +15,13 @@ from email.message import EmailMessage
 
 from .db import get_engine, get_session
 
+from datetime import datetime
+
 app = FastAPI(title="Uptime Monitor", version="1.0.0")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
-templates.env.globals["now"] = datetime.utcnow
+templates.env.globals["now"] = datetime.utcnow 
 
 engine = get_engine()
 security = HTTPBasic()
