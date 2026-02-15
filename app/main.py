@@ -140,7 +140,7 @@ class MonitorUpdate(BaseModel):
 
 # --- Routes ---
 @app.get("/", response_class=HTMLResponse)
-def ui_home(request: Request, user: str = Depends(get_current_user)):
+def ui_home(request: Request):
     with get_session() as session:
         monitors = session.execute(
             text(
