@@ -28,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Remove setup-python, use system Python
+      # Remove setup-python, to use system Python
       - name: Set up venv and install dependencies
         run: |
           python3 -m venv venv
