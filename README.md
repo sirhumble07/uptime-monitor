@@ -1,4 +1,4 @@
-# Uptime Monitor
+# Uptime Monitor APP
 
 A minimal, production-ready FastAPI uptime monitoring dashboard with Docker, CI/CD, and Nginx reverse proxy.
 

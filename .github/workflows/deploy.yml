@@ -35,12 +35,10 @@ jobs:
           ./venv/bin/pip install -r requirements.txt
 
       - name: Init DB
-        run: |
-          ./venv/bin/python -m app.init_db || echo "No DB init script"
+        run: ./venv/bin/python -m app.init_db || echo "No DB init script"
 
       - name: Run tests
-        run: |
-          ./venv/bin/python -m pytest 
+        run: ./venv/bin/python -m pytest
 
   deploy:
     needs: test
