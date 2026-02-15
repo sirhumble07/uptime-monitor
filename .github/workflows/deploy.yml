@@ -18,7 +18,7 @@ jobs:  # Job definitions.
           POSTGRES_DB: uptime  # DB name.
         ports:  # Port mapping.
           - 5432:5432  # Host:container port.
-        options: >- 
+        options:
           --health-cmd="pg_isready -U app"
           --health-interval=10s  # Interval.
           --health-timeout=5s  # Timeout.
