@@ -4,3 +4,4 @@ sqlalchemy==2.0.35  # ORM and SQL toolkit.
 psycopg2-binary==2.9.9; python_version < "3.13"  # PostgreSQL driver (Py<=3.12).
 psycopg==3.2.3; python_version >= "3.13"  # PostgreSQL driver (Py>=3.13).
 pytest #for running test
+requests  # For FastAPI TestClient
