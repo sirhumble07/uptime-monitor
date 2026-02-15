@@ -1,46 +1,46 @@
-name: ci  # Workflow name.
+name: ci
 
-on:  # Triggers.
-  workflow_dispatch:  # Manual trigger.
-  push:  # Run on push.
-    branches: ["main"]  # Only main branch.
-  pull_request:  # Run on PRs.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
 
-jobs:  # Job definitions.
-  test:  # Job id.
+jobs:
+  test:
     runs-on: self-hosted
-    services:  # Service containers.
-      postgres:  # PostgreSQL service container.
-        image: postgres:16  # Postgres image.
-        env:  # Environment variables for Postgres.
-          POSTGRES_USER: app  # User.
-          POSTGRES_PASSWORD: app  # Password.
-          POSTGRES_DB: uptime  # DB name.
-        ports:  # Port mapping.
-          - 5432:5432  # Host:container port.
-        options: >-  # Health check for Postgres readiness.
-          --health-cmd="pg_isready -U app"  # Command to check health.
-          --health-interval=10s  # Interval.
-          --health-timeout=5s  # Timeout.
-          --health-retries=5  # Retries.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: uptime
+        ports:
+          - 5432:5432
+        options: >
+          --health-cmd="pg_isready -U app"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
-    steps:  # Steps in job.
-      - name: Checkout  # Step name.
-        uses: actions/checkout@v4  # Checkout code.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Python  # Step name.
-        uses: actions/setup-python@v5  # Install Python.
-        with:  # Inputs.
-          python-version: "3.12"  # Python version.
-
-      - name: Install deps  # Step name.
-        run: pip install -r requirements.txt  # Install dependencies.
+      - name: Set up venv and install dependencies
+        run: |
+          python3 -m venv venv
+          ./venv/bin/pip install --upgrade pip
+          ./venv/bin/pip install -r requirements.txt
 
       - name: Init DB
-        run: python -m app.init_db || echo "No DB init script" # Initialize DB (ignore if not present).
+        run: |
+          ./venv/bin/python -m app.init_db || echo "No DB init script"
 
-      - name: Run tests # Step name.
-        run: pytest  # Step name and command to run tests.
+      - name: Run tests
+        run: |
+          ./venv/bin/python -m pytest 
 
   deploy:
     needs: test

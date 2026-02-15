@@ -1,4 +1,4 @@
-<!doctype html>exit
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -36,12 +36,35 @@
                 <th>URL</th>
                 <th>Interval (s)</th>
                 <th>Status</th>
+                <th>Last Checked</th>
               </tr>
             </thead>
             <tbody id="monitorsBody">
-              <tr>
-                <td colspan="4" class="muted">No data yet</td>
-              </tr>
+              {% if monitors %}
+                {% for monitor in monitors %}
+                  <tr>
+                    <td>{{ monitor.name }}</td>
+                    <td><a href="{{ monitor.url }}" target="_blank">{{ monitor.url }}</a></td>
+                    <td>{{ monitor.interval_seconds }}</td>
+                    <td>
+                      {% if monitor.status == "up" %}
+                        <span style="color:green;">&#9679; Up</span>
+                      {% elif monitor.status == "down" %}
+                        <span style="color:red;">&#9679; Down</span>
+                      {% else %}
+                        <span style="color:gray;">&#9679; Pending</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {{ monitor.last_checked if monitor.last_checked else "Never" }}
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="muted">No monitors yet</td>
+                </tr>
+              {% endif %}
             </tbody>
           </table>
         </div>
@@ -51,7 +74,7 @@
         <div class="card-header">
           <h2>Quick Actions</h2>
         </div>
-        <form class="form" id="createForm">
+        <form class="form" id="createForm" method="post" action="/monitors">
           <label>
             Name
             <input type="text" name="name" placeholder="Homepage" required />
